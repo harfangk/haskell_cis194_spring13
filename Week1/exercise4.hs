@@ -35,3 +35,9 @@ sumDigits [] = 0
 sumDigits (x:xs)
   | x > 10 = x `mod` 10 + x `div` 10 + sumDigits xs
   | otherwise = x + sumDigits xs
+
+validate :: Integer -> Bool
+validate x
+  | result `mod` 10 == 0 = True
+  | otherwise = False
+  where result = sumDigits(doubleEveryOther(toDigits x))
