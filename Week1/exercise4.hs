@@ -1,13 +1,15 @@
 {-
-Exercise 3
+Exercise 4
 
-The output of doubleEveryOther has a mix of one-digit and two-digit numbers. Define the function
+Define the function
 
-sumDigits :: [Integer] -> Integer
+validate :: Integer -> Bool
 
-to calculate the sum of all digits.
+that indicates whether an Integer could be a valid credit card number.
+This will use all functions defined in the previous exercises.
 
-Example: sumDigits [16,7,12,5] = 1 + 6 + 7 + 1 + 2 + 5 = 22
+Example: validate 4012888888881881 = True
+Example: validate 4012888888881882 = False
 -}
 
 toDigits :: Integer -> [Integer]
