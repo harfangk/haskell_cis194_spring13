@@ -20,7 +20,17 @@ type Peg = String
 type Move = (Peg, Peg)
 hanoi :: Integer -> Peg -> Peg -> Peg -> Peg -> [Move]
 hanoi n source target tempStore1 tempStore2
-  | n <= 0 = []
-  | n == 1 = [(source, target)]
-  | n == 2 = [(source, tempStore), (source, target), (source, tempStore)]
-  | otherwise = hanoi (n-1) source tempStore target ++ hanoi (n-2) source target tempStore ++ hanoi (n-1) tempStore target source
+  | n == 0    = []
+  | otherwise = hanoi (findTemporaryHeight n) source tempStore1 target tempStore2
+                ++ hanoi3 (n-(findTemporaryHeight n)) source target tempStore2 ++
+                hanoi (findTemporaryHeight n) tempStore1 target source tempStore2
+
+findTemporaryHeight :: Integer -> Integer
+findTemporaryHeight n = n + 1 - round(sqrt (fromIntegral((2*n) + 1)))
+
+hanoi3 :: Integer -> Peg -> Peg -> Peg -> [Move]
+hanoi3 n source target tempStore
+  | n == 0    = []
+  | otherwise = hanoi3 (n-1) source tempStore target
+                ++ [(source, target)] ++
+                hanoi3 (n-1) tempStore target source
