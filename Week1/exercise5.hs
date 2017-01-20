@@ -46,5 +46,7 @@ type Peg = String
 type Move = (Peg, Peg)
 hanoi :: Integer -> Peg -> Peg -> Peg -> [Move]
 hanoi n source target tempStore
-  | n == 0 = []
-  | otherwise = hanoi (n-1) source tempStore target ++ [(source, target)] ++ hanoi (n-1) tempStore target source
+  | n == 0    = []
+  | otherwise = hanoi (n-1) source tempStore target
+                ++ [(source, target)] ++
+                hanoi (n-1) tempStore target source

@@ -22,7 +22,7 @@ hanoi :: Integer -> Peg -> Peg -> Peg -> Peg -> [Move]
 hanoi n source target tempStore1 tempStore2
   | n == 0    = []
   | otherwise = hanoi (findTemporaryHeight n) source tempStore1 target tempStore2
-                ++ hanoi3 (n-(findTemporaryHeight n)) source target tempStore2 ++
+                ++ hanoi3 (n - findTemporaryHeight n) source target tempStore2 ++
                 hanoi (findTemporaryHeight n) tempStore1 target source tempStore2
 
 findTemporaryHeight :: Integer -> Integer
