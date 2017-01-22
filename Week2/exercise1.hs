@@ -69,3 +69,19 @@ of any LogMessage in the right child.
 Unknown messages should not be stored in a MessageTree since
 they lack a timestamp
 -}
+
+parseMessage :: String -> LogMessage
+parseMessage string =
+  case words string of
+    ("E":severity:timeStamp:xs) -> LogMessage (Error (read severity)) (read timeStamp) (unwords xs)
+    ("I":timeStamp:xs) -> LogMessage Info (read timeStamp) (unwords xs)
+    ("W":timeStamp:xs) -> LogMessage Warning (read timeStamp) (unwords xs)
+    _ -> Unknown string
+
+parse :: String -> [LogMessage]
+parse logFile = parseLines (lines logFile)
+
+parseLines :: [String] -> [LogMessage]
+parseLines [] = []
+parseLines [x] = [parseMessage x]
+parseLines (x:xs) = parseMessage x:parseLines xs
