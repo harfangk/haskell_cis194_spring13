@@ -35,3 +35,10 @@ parseLines :: [String] -> [LogMessage]
 parseLines [] = []
 parseLines [x] = [parseMessage x]
 parseLines (x:xs) = parseMessage x:parseLines xs
+
+insert :: LogMessage -> MessageTree -> MessageTree
+insert (Unknown _) tree = tree
+insert logMessage Leaf = Node Leaf logMessage Leaf
+insert logMessage@(LogMessage _ newTimeStamp _) (Node leftNode (LogMessage _ oldTimeStamp _) rightNode)
+  | newTimeStamp < oldTimeStamp = insert logMessage leftNode
+  | otherwise = insert logMessage rightNode
