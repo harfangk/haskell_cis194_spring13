@@ -21,3 +21,9 @@ localMaxima [2,9,5,6,1] == [9,6]
 localMaxima [2,3,4,1,5] == [4]
 localMaxima [1,2,3,4,5] == []
 -}
+
+localMaxima :: [Integer] -> [Integer]
+localMaxima (x:xs@(y:z:zs)) 
+  | x < y && y > z = y : localMaxima xs
+  | otherwise = localMaxima xs
+localMaxima _ = []
