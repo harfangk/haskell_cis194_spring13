@@ -30,7 +30,6 @@ parse logFile = parseLines (lines logFile)
 
 parseLines :: [String] -> [LogMessage]
 parseLines [] = []
-parseLines [x] = [parseMessage x]
 parseLines (x:xs) = parseMessage x:parseLines xs
 
 insert :: LogMessage -> MessageTree -> MessageTree
@@ -39,3 +38,7 @@ insert logMessage Leaf = Node Leaf logMessage Leaf
 insert logMessage@(LogMessage _ newTimeStamp _) (Node leftNode oldLogMessage@(LogMessage _ oldTimeStamp _) rightNode)
   | newTimeStamp < oldTimeStamp = Node (insert logMessage leftNode) oldLogMessage rightNode
   | otherwise = Node leftNode oldLogMessage (insert logMessage rightNode)
+
+build :: [LogMessage] -> MessageTree
+build [] = Leaf
+build (x:xs) = insert x (build xs)
