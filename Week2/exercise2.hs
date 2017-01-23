@@ -39,6 +39,6 @@ parseLines (x:xs) = parseMessage x:parseLines xs
 insert :: LogMessage -> MessageTree -> MessageTree
 insert (Unknown _) tree = tree
 insert logMessage Leaf = Node Leaf logMessage Leaf
-insert logMessage@(LogMessage _ newTimeStamp _) (Node leftNode (LogMessage _ oldTimeStamp _) rightNode)
-  | newTimeStamp < oldTimeStamp = insert logMessage leftNode
-  | otherwise = insert logMessage rightNode
+insert logMessage@(LogMessage _ newTimeStamp _) (Node leftNode oldLogMessage@(LogMessage _ oldTimeStamp _) rightNode)
+  | newTimeStamp < oldTimeStamp = Node (insert logMessage leftNode) oldLogMessage rightNode
+  | otherwise = Node leftNode oldLogMessage (insert logMessage rightNode)
