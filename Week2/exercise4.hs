@@ -48,3 +48,7 @@ insert logMessage@(LogMessage _ newTimeStamp _) (Node leftNode oldLogMessage@(Lo
 build :: [LogMessage] -> MessageTree
 build [] = Leaf
 build (x:xs) = insert x (build xs)
+
+inOrder :: MessageTree -> [LogMessage]
+inOrder Leaf = []
+inOrder Node leftNode logMessage rightNode = inOrder leftNode ++ [logMessage] ++ inOrder rightNode
