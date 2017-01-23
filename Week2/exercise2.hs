@@ -33,7 +33,6 @@ parse logFile = parseLines (lines logFile)
 
 parseLines :: [String] -> [LogMessage]
 parseLines [] = []
-parseLines [x] = [parseMessage x]
 parseLines (x:xs) = parseMessage x:parseLines xs
 
 insert :: LogMessage -> MessageTree -> MessageTree
