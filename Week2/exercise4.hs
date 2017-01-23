@@ -51,4 +51,4 @@ build (x:xs) = insert x (build xs)
 
 inOrder :: MessageTree -> [LogMessage]
 inOrder Leaf = []
-inOrder Node leftNode logMessage rightNode = inOrder leftNode ++ [logMessage] ++ inOrder rightNode
+inOrder (Node leftNode logMessage rightNode) = (inOrder leftNode) ++ [logMessage] ++ (inOrder rightNode)
