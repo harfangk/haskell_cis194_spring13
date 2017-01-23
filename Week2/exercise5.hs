@@ -77,3 +77,23 @@ build (x:xs) = insert x (build xs)
 inOrder :: MessageTree -> [LogMessage]
 inOrder Leaf = []
 inOrder (Node leftNode logMessage rightNode) = (inOrder leftNode) ++ [logMessage] ++ (inOrder rightNode)
+
+whatWentWrong :: [LogMessage] -> [String]
+whatWentWrong [] = []
+whatWentWrong list = (extractMessages . inOrder . build . filterSevereErrors) list
+
+filterSevereErrors :: [LogMessage] -> [LogMessage]
+filterSevereErrors [] = []
+filterSevereErrors (x:xs) =
+  case x of
+    LogMessage (Error severity) _ _
+      | severity > 50 -> x:filterSevereErrors xs
+      | otherwise -> filterSevereErrors xs
+    _ -> filterSevereErrors xs
+
+extractMessages :: [LogMessage] -> [String]
+extractMessages [] = []
+extractMessages (x:xs) = 
+  case x of
+    LogMessage _ _ message -> message : extractMessages xs
+    _ -> extractMessages xs
