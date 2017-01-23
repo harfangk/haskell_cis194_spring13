@@ -31,7 +31,6 @@ runEveryNth [] _ = []
 runEveryNth (x:xs) list = everynth x list : runEveryNth xs list
 
 everynth :: Int -> [a] -> [a]
-everynth 1 xs = xs
 everynth n xs = 
   case drop (n-1) xs of
     [] -> []
