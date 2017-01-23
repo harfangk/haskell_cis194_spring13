@@ -21,3 +21,18 @@ skips [] == []
 
 Note that the output should be the same length as the input.
 -}
+
+skips :: [a] -> [[a]]
+skips [] = []
+skips xs = runEveryNth [1..(length xs)] xs
+
+runEveryNth :: [Int] -> [a] -> [[a]]
+runEveryNth [] _ = []
+runEveryNth (x:xs) list = everynth x list : runEveryNth xs list
+
+everynth :: Int -> [a] -> [a]
+everynth 1 xs = xs
+everynth n xs = 
+  case drop (n-1) xs of
+    [] -> []
+    (y:ys) -> y : everynth n ys
