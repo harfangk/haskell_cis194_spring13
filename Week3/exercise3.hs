@@ -32,9 +32,10 @@ histogram [1,4,5,4,6,6,3,4,2,4,9] ==
 -}
 
 import Data.List
+import Control.Monad
 
 frequency :: [Integer] -> [(Int, Integer)]
-frequency xs = zip (map length $ group $ sort xs) (nub xs)
+frequency = ap (zip . map length . group . sort) nub
 
 maxFrequency :: [Integer] -> Int
 maxFrequency [] = 0
@@ -43,14 +44,14 @@ maxFrequency xs =
     (frequency, element) -> frequency
 
 findEmptyInteger :: Integer -> [Integer] -> [Integer]
-findEmptyInteger maxRange xs = [0..maxRange] \\ xs
+findEmptyInteger = (\\) . enumFromTo 0
 
 buildMissingTuple :: [Integer] -> [(Int, Integer)]
 buildMissingTuple = map (\ x -> (0, x)) 
 
 toStringList :: [(Int, Integer)] -> Int -> [String]
 toStringList [] _ = []
-toStringList ((count, element):ys) maxFreq = (show element ++ "=" ++ concat (replicate count "*") ++ concat (replicate (maxFreq  - count) " ")) : toStringList ys maxFreq
+toStringList ((count, element):ys) maxFreq = (show element ++ "=" ++ concat (replicate count "*") ++ concat (replicate (maxFreq - count) " ")) : toStringList ys maxFreq
 
 histogram :: [Integer] -> String
-histogram list = intercalate "\n" (reverse (transpose (sort (toStringList (frequency list ++ buildMissingTuple (findEmptyInteger 9 list)) (maxFrequency list)))))
+histogram = intercalate "\n" . reverse . transpose . sort . ap (toStringList . liftM2 (++) frequency (buildMissingTuple . findEmptyInteger 9)) maxFrequency
