@@ -1,5 +1,7 @@
 {-
-Exercise 3 Histogram
+Exercise 3
+
+Histogram
 
 For this task, write a function
 

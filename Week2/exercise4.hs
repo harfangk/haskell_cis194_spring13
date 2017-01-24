@@ -4,20 +4,23 @@ module LogAnalysis where
 import Log
 
 {-
-Exercise 2
+Exercise 4
 
-Define a function
+Finally, define the function
 
-insert :: LogMessage -> MessageTree -> MessageTree
+inOrder :: MessageTree -> [LogMessage]
 
-which inserts a new LogMessage into an existing MessageTree, producing
-a new MessageTree. insert may assume that it is given a
-sorted MessageTree, and must produce a new sorted MessageTree
-containing the new LogMessage in addition to the contents of the
-original MessageTree.
+which takes a sorted MessageTree and produces a list of all the
+LogMessages it contains, sorted by timestamp from smallest to biggest.
+(This is known as an in-order traversal of the MessageTree.)
 
-However, note that if insert is given a LogMessage which is
-Unknown, it should return the MessageTree unchanged.
+With these functions, we can now remove Unknown messages and
+sort the well-formed messages using an expression such as:
+
+inOrder (build tree)
+
+[Note: there are much better ways to sort a list; this is just an exercise
+to get you working with recursive data structures!]
 -}
 
 parseMessage :: String -> LogMessage
@@ -41,3 +44,11 @@ insert logMessage Leaf = Node Leaf logMessage Leaf
 insert logMessage@(LogMessage _ newTimeStamp _) (Node leftNode oldLogMessage@(LogMessage _ oldTimeStamp _) rightNode)
   | newTimeStamp < oldTimeStamp = Node (insert logMessage leftNode) oldLogMessage rightNode
   | otherwise = Node leftNode oldLogMessage (insert logMessage rightNode)
+
+build :: [LogMessage] -> MessageTree
+build [] = Leaf
+build (x:xs) = insert x (build xs)
+
+inOrder :: MessageTree -> [LogMessage]
+inOrder Leaf = []
+inOrder (Node leftNode logMessage rightNode) = (inOrder leftNode) ++ [logMessage] ++ (inOrder rightNode)

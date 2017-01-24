@@ -4,20 +4,17 @@ module LogAnalysis where
 import Log
 
 {-
-Exercise 2
+Exercise 3
 
-Define a function
+Once we can insert a single LogMessage into a MessageTree,
+we can build a complete MessageTree from a list of messages. Specifi-
+cally, define a function
 
-insert :: LogMessage -> MessageTree -> MessageTree
+build :: [LogMessage] -> MessageTree
 
-which inserts a new LogMessage into an existing MessageTree, producing
-a new MessageTree. insert may assume that it is given a
-sorted MessageTree, and must produce a new sorted MessageTree
-containing the new LogMessage in addition to the contents of the
-original MessageTree.
-
-However, note that if insert is given a LogMessage which is
-Unknown, it should return the MessageTree unchanged.
+which builds up a MessageTree containing the messages in the list,
+by successively inserting the messages into a MessageTree (beginning
+with a Leaf).
 -}
 
 parseMessage :: String -> LogMessage
@@ -41,3 +38,7 @@ insert logMessage Leaf = Node Leaf logMessage Leaf
 insert logMessage@(LogMessage _ newTimeStamp _) (Node leftNode oldLogMessage@(LogMessage _ oldTimeStamp _) rightNode)
   | newTimeStamp < oldTimeStamp = Node (insert logMessage leftNode) oldLogMessage rightNode
   | otherwise = Node leftNode oldLogMessage (insert logMessage rightNode)
+
+build :: [LogMessage] -> MessageTree
+build [] = Leaf
+build (x:xs) = insert x (build xs)
