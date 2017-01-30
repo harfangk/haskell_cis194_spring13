@@ -49,21 +49,27 @@ reify $ mul (add (lit 2) (lit 3)) (lit 4)
 at the ghci prompt.
 -}
 
-data ExprT = Lit Integer
-           | Add ExprT ExprT
-           | Mul ExprT ExprT
-           deriving (Show, Eq)
+import ExprT
+import Parser
 
 eval :: ExprT -> Integer
+eval (Lit x) = x
+eval (Add x y) = (eval x) + (eval y)
+eval (Mul x y) = (eval x) * (eval y)
 
 evalStr :: String -> Maybe Integer
+evalStr x =
+  case parsedExp of
+    Just exp -> Just (eval exp)
+    _ -> Nothing
+  where parsedExp = parseExp Lit Add Mul x
 
 class Expr a where
-  lit :: a -> Integer 
-  add :: a -> a -> Integer
-  mul :: a -> a -> Integer
+  lit :: Integer -> a
+  add :: a -> a -> a
+  mul :: a -> a -> a
 
 instance Expr ExprT where
-  lit x =
-  add x y =
-  mul x y = 
+  lit x = Lit x
+  add x y = Add x y
+  mul x y = Mul x y
