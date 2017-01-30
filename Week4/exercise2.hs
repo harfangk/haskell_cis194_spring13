@@ -14,8 +14,8 @@ trees. Note that each node stores an extra Integer representing the
 height at that node.
 
 data Tree a = Leaf
-| Node Integer (Tree a) a (Tree a)
-deriving (Show, Eq)
+            | Node Integer (Tree a) a (Tree a)
+            deriving (Show, Eq)
 
 For this exercise, write a function
 
@@ -48,3 +48,18 @@ data Tree a = Leaf
             deriving (Show, Eq)
 
 foldTree :: [a] -> Tree a
+foldTree = foldr insert Leaf 
+
+insert :: a -> Tree a -> Tree a
+insert x Leaf = Node 0 Leaf x Leaf
+insert x (Node n leftTree value rightTree)  
+  | leftTreeHeight < rightTreeHeight = Node n (insert x leftTree) value rightTree
+  | leftTreeHeight > rightTreeHeight = Node n leftTree value (insert x rightTree)
+  | otherwise = Node (rightSubtreeHeight+1) (insert x leftTree) value rightTree
+  where leftTreeHeight = heightOfTree leftTree
+        rightTreeHeight = heightOfTree rightTree
+        rightSubtreeHeight = heightOfTree (insert x rightTree)
+
+heightOfTree :: Tree a -> Integer
+heightOfTree Leaf = -1
+heightOfTree (Node height _ _ _) = height
