@@ -14,7 +14,8 @@ fun1 (x:xs)
 
 2. fun2 :: Integer -> Integer
 fun2 1 = 0
-fun2 n | even n = n + fun2 (n ‘div‘ 2)
+fun2 n
+| even n = n + fun2 (n ‘div‘ 2)
 | otherwise = fun2 (3 * n + 1)
 
 Hint: For this problem you may wish to use the functions iterate
@@ -22,5 +23,8 @@ and takeWhile. Look them up in the Prelude documentation to see
 what they do.-}
 
 fun1 :: [Integer] -> Integer
+fun1 = foldl (\acc x -> (x-2)*acc) 1 . filter even
 
 fun2 :: Integer -> Integer
+fun2 = sum . filter even . takeWhile (>1) . iterate (\x -> if even x then x `div` 2 else 3 * x + 1)
+
