@@ -29,11 +29,17 @@ Nothing for inputs which are not well-formed expressions, and
 Just n for well-formed inputs that evaluate to n.
 -}
 
-data ExprT = Lit Integer
-           | Add ExprT ExprT
-           | Mul ExprT ExprT
-           deriving (Show, Eq)
+import ExprT
+import Parser
 
 eval :: ExprT -> Integer
+eval (Lit x) = x
+eval (Add x y) = (eval x) + (eval y)
+eval (Mul x y) = (eval x) * (eval y)
 
 evalStr :: String -> Maybe Integer
+evalStr x =
+  case parsedExp of
+    Just exp -> Just (eval exp)
+    _ -> Nothing
+  where parsedExp = parseExp Lit Add Mul x
