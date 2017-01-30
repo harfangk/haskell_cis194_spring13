@@ -36,9 +36,9 @@ eval :: ExprT -> Integer
 For example, eval (Mul (Add (Lit 2) (Lit 3)) (Lit 4)) == 20
 -}
 
-data ExprT = Lit Integer
-           | Add ExprT ExprT
-           | Mul ExprT ExprT
-           deriving (Show, Eq)
+import ExprT
 
 eval :: ExprT -> Integer
+eval (Lit x) = x
+eval (Add x y) = (eval x) + (eval y)
+eval (Mul x y) = (eval x) * (eval y)
