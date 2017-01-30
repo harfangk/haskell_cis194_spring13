@@ -33,7 +33,10 @@ foldr f z [x1, x2, ..., xn] == x1 ‘f‘ (x2 ‘f‘ ... (xn ‘f‘ z)...)
 foldl f z [x1, x2, ..., xn] == (...((z ‘f‘ x1) ‘f‘ x2) ‘f‘...) ‘f‘ xn-}
 
 xor :: [Bool] -> Bool
+xor = foldl (\acc _ -> not acc) False . filter (==True)
 
-map1 :: (a -> b) -> [a] -> [b]
+map' :: (a -> b) -> [a] -> [b]
+map' f = foldr (\x acc -> f x : acc) []
 
 myfoldl :: (a -> b -> a) -> a -> [b] -> a
+myfoldl f base xs = foldr (flip f) base xs
