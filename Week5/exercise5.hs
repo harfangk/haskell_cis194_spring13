@@ -1,3 +1,4 @@
+{-# LANGUAGE FlexibleInstances, TypeSynonymInstances #-}
 {-
 Exercise 5 (do this OR exercise 6)
 
@@ -61,21 +62,61 @@ which takes Strings representing arithmetic expressions and compiles
 them into programs that can be run on the custom CPU.
 -}
 
-data ExprT = Lit Integer
-           | Add ExprT ExprT
-           | Mul ExprT ExprT
-           deriving (Show, Eq)
+import ExprT
+import Parser
+import StackVM
 
 eval :: ExprT -> Integer
+eval (ExprT.Lit x) = x
+eval (ExprT.Add x y) = (eval x) + (eval y)
+eval (ExprT.Mul x y) = (eval x) * (eval y)
 
 evalStr :: String -> Maybe Integer
+evalStr x =
+  case parsedExp of
+    Just exp -> Just (eval exp)
+    _ -> Nothing
+  where parsedExp = parseExp ExprT.Lit ExprT.Add ExprT.Mul x
 
 class Expr a where
-  lit :: a -> Integer 
-  add :: a -> a -> Integer
-  mul :: a -> a -> Integer
+  lit :: Integer -> a
+  add :: a -> a -> a
+  mul :: a -> a -> a
 
 instance Expr ExprT where
-  lit x =
-  add x y =
-  mul x y = 
+  lit x = ExprT.Lit x
+  add x y = ExprT.Add x y
+  mul x y = ExprT.Mul x y
+
+instance Expr Integer where
+  lit x = x
+  add x y = x + y
+  mul x y = x * y
+
+instance Expr Bool where
+  lit x  
+    | x > 0 = True
+    | otherwise = False
+  add x y = x || y
+  mul x y = x && y
+
+newtype MinMax = MinMax Integer deriving (Eq, Show)
+newtype Mod7 = Mod7 Integer deriving (Eq, Show)
+
+instance Expr MinMax where
+  lit x = MinMax x
+  add (MinMax x) (MinMax y) = lit (max x y)
+  mul (MinMax x) (MinMax y) = lit (min x y)
+
+instance Expr Mod7 where
+  lit x = Mod7 (x `mod` 7)
+  add (Mod7 x) (Mod7 y) = lit (x + y)
+  mul (Mod7 x) (Mod7 y) = lit (x * y)
+
+instance Expr StackVM.Program where
+  lit x = [StackVM.PushI x]
+  add x y = x ++ y ++ [StackVM.Add]
+  mul x y = x ++ y ++ [StackVM.Mul]
+
+compile :: String -> Maybe Program
+compile = parseExp lit add mul
