@@ -90,10 +90,10 @@ newtype Mod7 = Mod7 Integer deriving (Eq, Show)
 
 instance Expr MinMax where
   lit x = MinMax x
-  add (MinMax x) (MinMax y) = MinMax (max x y)
-  mul (MinMax x) (MinMax y) = MinMax (min x y)
+  add (MinMax x) (MinMax y) = lit (max x y)
+  mul (MinMax x) (MinMax y) = lit (min x y)
 
 instance Expr Mod7 where
   lit x = Mod7 (x `mod` 7)
-  add (Mod7 x) (Mod7 y) = Mod7 ((x + y) `mod` 7)
-  mul (Mod7 x) (Mod7 y) = Mod7 ((x * y) `mod` 7)
+  add (Mod7 x) (Mod7 y) = lit (x + y)
+  mul (Mod7 x) (Mod7 y) = lit (x * y)
