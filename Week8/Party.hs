@@ -1,5 +1,6 @@
 module Party where
 
+import Data.Tree
 import Employee
 
 glCons :: Employee -> GuestList -> GuestList
@@ -13,3 +14,6 @@ moreFun :: GuestList -> GuestList -> GuestList
 moreFun gl1@(GL empList1 fun1) gl2@(GL empList2 fun2) 
   | fun1 >= fun2 = gl1
   | otherwise = gl2
+
+treeFold :: (a -> [b] -> b) -> Tree a -> b
+treeFold f (Node rl sf) = f rl (map (treeFold f) sf)
