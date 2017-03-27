@@ -1,6 +1,7 @@
 module Party where
 
 import Data.Tree
+import Data.Monoid
 import Employee
 
 glCons :: Employee -> GuestList -> GuestList
@@ -17,3 +18,7 @@ moreFun gl1@(GL empList1 fun1) gl2@(GL empList2 fun2)
 
 treeFold :: (a -> [b] -> b) -> Tree a -> b
 treeFold f (Node rl sf) = f rl (map (treeFold f) sf)
+
+nextLevel :: Employee -> [(GuestList, GuestList)] -> (GuestList, GuestList)
+nextLevel emp gl = ((glCons emp $ snd sumGl), (fst sumGl))
+  where sumGl = foldl (<>) mempty gl
