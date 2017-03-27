@@ -3,6 +3,7 @@ module Party where
 import Data.Tree
 import Data.Monoid
 import Employee
+import Data.List
 
 glCons :: Employee -> GuestList -> GuestList
 glCons emp@(Emp _ empFun) (GL empList glFun) = GL (emp : empList) (glFun + empFun)
@@ -22,3 +23,21 @@ treeFold f (Node rl sf) = f rl (map (treeFold f) sf)
 nextLevel :: Employee -> [(GuestList, GuestList)] -> (GuestList, GuestList)
 nextLevel emp gl = ((glCons emp $ snd sumGl), (fst sumGl))
   where sumGl = foldl (<>) mempty gl
+
+maxFun :: Tree Employee -> GuestList
+maxFun t = moreFun (fst foldedTree) (snd foldedTree)
+  where foldedTree = treeFold nextLevel t
+
+getFun :: GuestList -> Fun
+getFun (GL _ fun) = fun
+
+getEmployees :: GuestList -> [Employee]
+getEmployees (GL el _) = sortBy (\a b -> (empName a) `compare` (empName b)) el
+
+main = do
+  tree <- readFile "company.txt"
+  let gl = maxFun . read $ tree
+      firstLine = "Total fun: " ++ (show . getFun $ gl)
+      sortedEmployees = map empName . getEmployees $ gl 
+  putStrLn firstLine
+  mapM_ print sortedEmployees
