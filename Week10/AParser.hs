@@ -78,3 +78,7 @@ abParser = (,) <$> char 'a' <*> char 'b'
 abParser_ :: Parser ()
 abParser_ = f <$> abParser
   where f = \_ -> ()
+
+intPair :: Parser ([Integer])
+intPair = f <$> posInt <*> char ' ' <*> posInt
+  where f = \a _ b -> [a, b]
