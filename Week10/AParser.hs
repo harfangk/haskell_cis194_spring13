@@ -82,3 +82,11 @@ abParser_ = f <$> abParser
 intPair :: Parser ([Integer])
 intPair = f <$> posInt <*> char ' ' <*> posInt
   where f = \a _ b -> [a, b]
+
+instance Alternative Parser where
+  empty = Parser f
+    where f str = Nothing
+  p1 <|> p2 = Parser f
+    where f str = case runParser p1 str of
+            Nothing -> runParser p2 str
+            Just a -> Just a
