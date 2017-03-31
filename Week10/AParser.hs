@@ -88,5 +88,9 @@ instance Alternative Parser where
     where f str = Nothing
   p1 <|> p2 = Parser f
     where f str = case runParser p1 str of
-            Nothing -> runParser p2 str
             Just a -> Just a
+            Nothing -> runParser p2 str
+
+intOrUppercase :: Parser ()
+intOrUppercase = f <$> posInt <|> f <$> satisfy (isUpper)
+  where f = \_ -> ()
