@@ -71,3 +71,10 @@ instance Applicative Parser where
     where f str = case (runParser p1 str) of
                     Nothing -> Nothing
                     Just (newVal, remStr) -> first newVal <$> runParser p2 remStr
+
+abParser :: Parser (Char, Char)
+abParser = (,) <$> char 'a' <*> char 'b'
+
+abParser_ :: Parser ()
+abParser_ = f <$> abParser
+  where f = \_ -> ()
