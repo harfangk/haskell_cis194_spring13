@@ -3,6 +3,7 @@
 module Risk where
 
 import Control.Monad.Random
+import Data.List
 
 ------------------------------------------------------------
 -- Die values
@@ -28,4 +29,12 @@ type Army = Int
 data Battlefield = Battlefield { attackers :: Army, defenders :: Army }
 
 battle :: Battlefield -> Rand StdGen Battlefield
-battle bf = 
+battle bf = do
+          let attNum = minimum [3, attackers bf - 1]
+          let defNum = minimum [2, defenders bf]
+          attDie <- sequence (replicate attNum die)
+          defDie <- sequence (replicate defNum die)
+          let sortedAttDie = map unDV (take 2 (sortBy (flip compare) attDie)) 
+          let sortedDefDie = map unDV (take 2 (sortBy (flip compare) defDie)) 
+          let results = zipWith (\a b -> a - b) sortedAttDie sortedDefDie
+          return (Battlefield (attackers bf - (length $ filter (<= 0) results)) (defenders bf - (length $ filter (> 0) results)))
