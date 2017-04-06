@@ -38,3 +38,8 @@ battle bf = do
           let sortedDefDie = map unDV (take 2 (sortBy (flip compare) defDie)) 
           let results = zipWith (\a b -> a - b) sortedAttDie sortedDefDie
           return (Battlefield (attackers bf - (length $ filter (<= 0) results)) (defenders bf - (length $ filter (> 0) results)))
+
+invade :: Battlefield -> Rand StdGen Battlefield
+invade bf 
+  | attackers bf < 3 || defenders bf == 0 = return bf
+  | otherwise = return bf >>= battle
