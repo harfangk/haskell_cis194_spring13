@@ -42,4 +42,12 @@ battle bf = do
 invade :: Battlefield -> Rand StdGen Battlefield
 invade bf 
   | attackers bf < 3 || defenders bf == 0 = return bf
-  | otherwise = return bf >>= battle
+  | otherwise = battle bf >>= invade
+
+successProb :: Battlefield -> Rand StdGen Double
+successProb bf = do
+               let sampleSize = 1000
+               resultArray <- sequence (replicate sampleSize (invade bf))
+               let victoryCount = length (filter (\x -> defenders x == 0) resultArray)
+               let victoryProb = fromIntegral victoryCount / fromIntegral sampleSize
+               return victoryProb
